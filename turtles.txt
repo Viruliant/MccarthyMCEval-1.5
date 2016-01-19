@@ -1,0 +1,13 @@
+;________________________________________________________________________LICENSE
+;    Use of this software and  associated  documentation  files  (the
+;    "Software"), is governed by the Creative Commons  Public  Domain
+;    License(the "License"). You may obtain a copy of the License at:
+;        https://creativecommons.org/licenses/publicdomain/
+;______________________________________________________Initializing for McCarthy
+;Data storage and retrieval -http://goo.gl/0NA6pa
+    (define (@cons x y) (λ (m) (m x y)))
+    (define (@car z) (z (λ (p q) p)))
+    (define (@cdr z) (z (λ (p q) q)))
+;STILL NEEDS:
+;quote, atom, eq, cond
+
