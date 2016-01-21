@@ -1,66 +1,69 @@
 
-))
+(label mc.evalquote (lambda (fn x)
+	apply(fn x nil)))
 
-(LABEL MC.evalquote (LAMBDA (fn;x)
-	apply(fn;x;NIL)))
+(label mc.apply (lambda (fn x a)
+	(mc.cond ((atom(fn) ) (
+		(mc.cond ((eq(fn car)) ( caar(x) ))
+		((eq(fn cdr) ) ( cdar(x) ))
+		((eq(fn cons) ) ( cons(car(x) cadr(x)) ))
+		((eq(fn atom) ) ( atom(car(x)) ))
+		((eq(fn eq) ) ( eq(car(x) cadr(x)) ))
+		((t ) ( apply(eval(fn a) x a)) ))))
+	((eq(car(fn) lambda) ) ( eval(caddr(fn) parlis(cadr(fn) x a)) ))
+	((eq(car(fn) label) ) ( apply(caddr(fn) x cons(cons(cadr(fn) ))
+			caddr(fn)) a)))))
 
-(LABEL MC.apply (LAMBDA (fn;x;a)
-	(atom(fn) ->
-		(eq(fn;CAR) -> caar(x);
-		eq(fn;CDR) -> cdar(x);
-		eq(fn;CONS) -> cons(car(x);cadr(x));
-		eq(fn;ATOM) -> atom(car(x));
-		eq(fn;EQ) -> eq(car(x);cadr(x));
-		T -> apply(eval(fn;a);x;a));
-	eq(car(fn);LAMBDA) -> eval(caddr(fn);parlis(cadr(fn);x;a));
-	eq(car(fn);LABEL) -> apply(caddr(fn);x;cons(cons(cadr(fn);
-			caddr(fn));a)))))
+(label mc.eval (lambda (e a)
+	(mc.cond
+		((atom(e) ) ( cdr(assoc(e a)) ))
+		((atom(car(e)) ) (
+			(mc.cond ((eq(car(e),quote) ) ( cadr(e) ))
+				((eq(car(e) cond) ) ( evcon(cdr(e) a) ))
+				((t ) ( apply(car(e) evlis(cdr(e) a) a)) ))))
+		((t ) ( apply(car(e) evlis(cdr(e) a) a))))))
 
-(LABEL MC.eval (LAMBDA (e;a)
-	(atom(e) -> cdr(assoc(e;a));
-	atom(car(e)) ->
-		(eq(car(e),QUOTE) -> cadr(e);
-		eq(car(e);COND) -> evcon(cdr(e);a);
-		T -> apply(car(e);evlis(cdr(e);a);a));
-	T -> apply(car(e);evlis(cdr(e);a);a))))
+(label mc.evcon (lambda (c a)
+	(mc.cond ((eval(caar(c) a) ) ( eval(cadar(c) a) ))
+	((t ) ( evcon(cdr(c) a))))))
 
-(LABEL MC.evcon (LAMBDA (c;a)
-	(eval(caar(c);a) -> eval(cadar(c);a);
-	T -> evcon(cdr(c);a))))
+(label mc.evlis (lambda (m a)
+	(mc.cond ((null(m) ) ( nil ))
+	((t ) ( cons(eval(car(m) a) evlis(cdr(m) a)))))))
 
-(LABEL MC.evlis (LAMBDA (m;a)
-	(null(m) -> NIL;
-	T -> cons(eval(car(m);a);evlis(cdr(m);a)))))
+(label mc.equal (lambda (x y)
+	(mc.cond
+		((atom(x) ) ( (mc.cond ((atom(y) ) ( eq(x y) )) ((t ) ( f))) ))
+		((equal (car (x) car(y)) ) ()) equal (cdr(x) cdr(y)) 
+		((t ) ( f)))))
 
-(LABEL MC.equal (LAMBDA (x;y)
-	(atom(x) -> (atom(y) -> eq(x;y); T -> F);
-		equal (car (x);car(y)) -> equal (cdr(x);cdr(y));
-		T -> F)))
+(label mc.subst (lambda (x y z)
+	(equal(y z) (() ()) x atom(z) (() ()) z t (() ()) cons(subst
+	(x y car(z)) subst(x y cdr(z))))))
 
-(LABEL MC.subst (LAMBDA (x;y;z)
-	(equal(y;z) -> x;atom(z) -> z;T -> cons(subst
-	(x;y;car(z));subst(x;y;cdr(z))))))
+(label mc.append (lambda (x y)
+	(mc.cond 
+		((null(x) ) ( y ))
+		((t ) ( cons(car(x) append(cdr(x) y)))))))
 
-(LABEL MC.append (LAMBDA (x;y)
-	(null(x) -> y;T -> cons(car(x);append(cdr(x);y)))))
+(label mc.member (lambda (x y)
+	(mc.cond ((null(y) ) ( f ))
+	((equal(x car(y)) ) ( t ))
+	((t ) ( member(x cdr(y)))))))
 
-(LABEL MC.member (LAMBDA (x;y)
-	(null(y) -> F;
-	equal(x;car(y)) -> T;
-	T -> member(x;cdr(y)))))
+(label mc.pairlis  (lambda (x  y  a)
+	(mc.cond ((null(x) ) ( a ))(( t ) ()) cons(cons(car(x)  car(y)) 
+	pairlis(cdr(x)  cdr (y)  a)))))
 
-(LABEL MC.pairlis  (LAMBDA (x; y; a)
-	(null(x) -> a; T -> cons(cons(car(x); car(y));
-	pairlis(cdr(x); cdr (y); a)))))
+(label mc.assoc (lambda (x a)
+	(mc.cond ((equal(caar(a) x) ) ( car(a) ))((t ) ( assoc(x cdr(a)))))))
 
-(LABEL MC.assoc (LAMBDA (x;a)
-	(equal(caar(a);x) -> car(a);T -> assoc(x;cdr(a)))))
+(label mc.sub2 (lambda (a z)
+	(mc.cond ((null(a) ) ( z ))((eq(caar(a) z)) (cdar(a) ))((t ) (
+	sub2(cdr(a) z))))))
 
-(LABEL MC.sub2 (LAMBDA (a;z)
-	(null(a) -> z;eq(caar(a);z)-cdar(a);T ->
-	sub2(cdr(a);z))))
+(label mc.sublis (lambda (a y)
+	(mc.cond ((atom(y) ) ( sub2(a y) ))((t ) ( cons(sublis(a car(y)) ))
+	sublis(a cdr(y))))))
 
-(LABEL MC.sublis (LAMBDA (a;y)
-	(atom(y) -> sub2(a;y);T -> Cons(sublis(a;car(y));
-	sublis(a;cdr(y))))
 

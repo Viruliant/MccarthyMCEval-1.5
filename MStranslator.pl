@@ -41,13 +41,38 @@ $field =~ s/\[/\(/gsm;
 #))(LABEL MC.$1 (LAMBDA ($2)
 $field =~ s/\n\t{0,0}([^\t\n]*?)\((.*?)\) \=\n/\n))\n\n(LABEL MC.$1 (LAMBDA ($2)\n/gsm;
 $field =~ s/\n\n\)\)/))/gsm;
+$field =~ s/[^\n]*?\n([^\n]*?)\n(.*\))/$2$1\n/gsm;
 #_______________________________________________________________________________
 #(a -> b; x -> y)
-#(MC.COND (A B) (X Y))
+#(MC.COND ((A)(B)) ((X)(Y)))
 
 
 #$field =~ s///gsm;
-#I don't think the above line can be made to work
+#not working currently
+#(A )->( B; X )->( Y)
+#(MC.COND ((A)(B)) ((X)(Y)))
+
+#(MC.COND 
+#((A)(B))
+#)
+
+
+
+#(
+#(MC.COND ((
+
+#->
+#)->( z)
+
+#)
+
+
+#)->(
+
+#;
+
+#(MC.COND ((
+
 
 
 #_______________________________________________________________________________

@@ -55,10 +55,10 @@ assoc[x;a] =
 	[equal[caar[a];x] -> car[a];T -> assoc[x;cdr[a]]]
 
 sub2[a;z] =
-	[null[a] -> z;eq[caar[a];z]-cdar[a];T ->
+	[null[a] -> z;eq[caar[a];z]->cdar[a];T ->
 	sub2[cdr[a];z]]
 
 sublis[a;y] =
-	[atom[y] -> sub2[a;y];T -> Cons[sublis[a;car[y]];
+	[atom[y] -> sub2[a;y];T -> cons[sublis[a;car[y]];
 	sublis[a;cdr[y]]]]
 
